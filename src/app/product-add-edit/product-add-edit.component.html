@@ -1,0 +1,43 @@
+<div class="container col-md-offset-6">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="col-md-6">
+    <!-- <input formControlName="_id" id="productId" type="hidden"> -->
+    <div class="form-group">
+      <label for="productName" class="mr-10">Name</label>
+      <input 
+        type="text" 
+        class="form-control w-50" 
+        formControlName = "productName" 
+        id="productName" 
+        placeholder="Enter your product name">
+      <div *ngIf="submitted && productForm.controls.productName.errors" class="text-danger">
+        <div *ngIf="productForm.controls.productName.errors.required">Name is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="productsku" class="mr-10">SKU</label>
+      <input 
+        type="text" 
+        class="form-control w-50" 
+        formControlName = "productsku" 
+        id="productsku" 
+        placeholder="Enter your product sku">
+      <div *ngIf="submitted && productForm.controls.productsku.errors" class="text-danger">
+        <div *ngIf="productForm.controls.productsku.errors.required">SKU is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input 
+        type="number" 
+        class="form-control w-50" 
+        formControlName = "price" 
+        id="price" 
+        placeholder="Enter your product price">
+      <div *ngIf="submitted && productForm.controls.price.errors" class="text-danger">
+        <div *ngIf="productForm.controls.price.errors.required">Price is required</div>
+      </div>
+    </div>
+    <button class="btn btn-primary">Submit</button>
+    <a class="btn btn-primary ml-3 text-white" (click)="onCancel()">Cancel</a>
+  </form>
+</div>

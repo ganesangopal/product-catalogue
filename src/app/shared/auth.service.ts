@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 export interface userLoginDetails {
   username: string,
@@ -17,38 +18,33 @@ export class AuthService {
 
   token: string;
   headers: any;
-  constructor(private http: HttpClient, private router: Router) { }
+  sessionDetails = {
+    sessionName: '',
+    sessionId: ''
+  }
+  constructor(
+    private http: HttpClient, 
+    private router: Router, 
+    private jwtHelper: JwtHelperService
+  ) { }
 
   onLogin(userData: userLoginDetails) {
-    console.log(userData);
-    return this.http.post('http://dev-product-catalogue.pantheonsite.io/api/product-catalogue/user/login',
-      userData
-    ).subscribe(
-      (data: any) => {
-        localStorage.setItem('token', data.token);
-        this.token = data.token;
-        this.router.navigate(['']);
-      },
-      (error) => console.log(error)
-    );
+    return this.http.post('/routes/login', userData);
   }
 
-  onLogout() {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': localStorage.getItem('token')});
-    //console.log(this.headers.get('X-CSRF-Token'));
-    return this.http.post('http://dev-product-catalogue.pantheonsite.io/api/product-catalogue/user/logout',
-      "",
-      {headers: headers}
-    ).subscribe(
-      (data: any) => {
-        localStorage.removeItem('token');
-        console.log(localStorage.getItem('token'));
-        this.router.navigate(['']);
-      },
-      (error) => console.log(error)
-    );
+  getCurrentUser() {
+    const token = localStorage.getItem('token');
+    const userData = this.jwtHelper.decodeToken(token);
+    return userData;
+  }
+
+  hasAdminRole() {
+    const token = localStorage.getItem('token');
+    const userData = this.jwtHelper.decodeToken(token);
+    if (this.isAuthenticated() && userData.roles.indexOf('administrator') !== -1) {
+      return true;
+    }
+    return false;
   }
 
   isAuthenticated() {

@@ -15,6 +15,11 @@ export class LoginComponent implements OnInit {
     username: '',
     password: ''
   }
+  token: string;
+  sessionDetails = {
+    sessionName: '',
+    sessionId: ''
+  }
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
@@ -24,7 +29,13 @@ export class LoginComponent implements OnInit {
     //console.log(this.loginForm);
     this.userData.username = this.loginForm.value.username;
     this.userData.password = this.loginForm.value.password;
-    this.authService.onLogin(this.userData);
+    this.authService.onLogin(this.userData).subscribe(
+      (data: any) => {
+        localStorage.setItem('token', data.token);
+        this.router.navigate(['/products']);
+      },
+      (error) => console.log(error)
+    );;
   }
 
 }

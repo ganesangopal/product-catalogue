@@ -1,0 +1,26 @@
+<div *ngIf="isAdmin()">
+  <a class="btn btn-primary" routerLink="add">Add Product</a>
+</div>
+<table class="table mt-5">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">SKU</th>
+      <th scope="col">Title</th>
+      <th scope="col">Price</th>
+      <th scope="col" *ngIf="isAdmin()">Operations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{product._id}}</td>
+      <td>{{product.productsku}}</td>
+      <td><a [routerLink]="['/products', product._id, 'view']">{{product.productName}}</a></td>
+      <td>{{product.price | currency}}</td>
+      <td *ngIf="isAdmin()">
+        <a [routerLink]="['/products', product._id, 'edit']">Edit</a> | 
+        <a (click)="deleteProduct(product)" class="delete-product-text text-danger">Delete</a>
+      </td>
+    </tr>
+  </tbody>
+</table>

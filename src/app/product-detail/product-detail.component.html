@@ -1,0 +1,8 @@
+<div *ngIf="product">
+  <p>Title: {{product.productName}}</p>
+  <p>SKU: {{product.productsku}}</p>
+  <p>Price: {{product.price | currency}}</p>
+</div>
+<div class="mt-3">
+  <a class="btn btn-primary" routerLink="/products">Back to Products List</a>
+</div>

@@ -1,0 +1,68 @@
+<div class="container col-md-offset-6">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="col-md-6">
+    <!-- <input formControlName="_id" id="productId" type="hidden"> -->
+    <div class="form-group">
+      <label for="firstName" class="mr-10">First Name</label>
+      <input 
+        type="text" 
+        class="form-control w-50" 
+        formControlName = "firstName" 
+        id="firstName" 
+        placeholder="Enter your First name">
+      <div *ngIf="submitted && userForm.controls.firstName.errors" class="text-danger">
+        <div *ngIf="userForm.controls.firstName.errors.required">First Name is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lastName" class="mr-10">Last Name</label>
+      <input 
+        type="text" 
+        class="form-control w-50" 
+        formControlName = "lastName" 
+        id="lastName" 
+        placeholder="Enter your Last Name">
+      <div *ngIf="submitted && userForm.controls.lastName.errors" class="text-danger">
+        <div *ngIf="userForm.controls.lastName.errors.required">Last Name is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="userName">Username</label>
+      <input 
+        type="text" 
+        class="form-control w-50" 
+        formControlName = "userName" 
+        id="userName" 
+        placeholder="Enter your username">
+      <div *ngIf="submitted && userForm.controls.userName.errors" class="text-danger">
+        <div *ngIf="userForm.controls.userName.errors.required">Username is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="userName">Email Address</label>
+      <input 
+        type="text" 
+        class="form-control w-50" 
+        formControlName = "emailAddress" 
+        id="emailAddress" 
+        placeholder="Enter your Email Address">
+      <div *ngIf="submitted && userForm.controls.emailAddress.errors" class="text-danger">
+        <div *ngIf="userForm.controls.emailAddress.errors.required">Email Address is required</div>
+        <div *ngIf="userForm.controls.emailAddress.errors.email">Invalid Email</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input 
+        type="password" 
+        class="form-control w-50" 
+        formControlName = "password" 
+        id="password" 
+        placeholder="Enter your Password">
+      <div *ngIf="submitted && userForm.controls.password.errors" class="text-danger">
+        <div *ngIf="userForm.controls.password.errors.required">Password is required</div>
+      </div>
+    </div>
+    <button class="btn btn-primary">Submit</button>
+    <a class="btn btn-primary ml-3 text-white" (click)="onCancel()">Cancel</a>
+  </form>
+</div>

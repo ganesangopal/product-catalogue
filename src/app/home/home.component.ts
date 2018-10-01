@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../shared/auth.service';
+import { ProductService } from '../product.service';
 
 @Component({
   selector: 'app-home',
@@ -8,15 +9,27 @@ import { AuthService } from '../shared/auth.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  products: any = [];
+  constructor(private authService: AuthService, private productService: ProductService) { }
 
   ngOnInit() {
-    console.log(localStorage.getItem('token'));
+    //console.log(localStorage.getItem('token'));
   }
 
   onLogout() {
     console.log('logout method');
-    this.authService.onLogout();
+    //this.authService.onLogout();
+  }
+
+  getAllProducts() {
+    this.productService.getAllProducts().subscribe(
+      (products) => this.products = products,
+      (error) => console.log(error)
+    );
+  }
+
+  getUserInfo() {
+    this.authService.getCurrentUser();
   }
 
 }
