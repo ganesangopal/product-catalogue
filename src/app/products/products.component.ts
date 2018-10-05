@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../product.service';
+import { ProductService } from '../services/product/product.service';
 import { ConfirmationDialog } from '../confirmation-dialog';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/auth.service';
