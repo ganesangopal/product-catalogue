@@ -11,7 +11,6 @@ import { AuthGuardService } from "../auth-guard.service";
 const routes: Routes = [
     {
         path: '', component: ProductsComponent, children: [
-            { path: '', component: ProductsComponent },
             { path: ':id/view', component: ProductDetailComponent },
             { path: 'add', component: ProductAddEditComponent, data: {
                 isEditMode: false

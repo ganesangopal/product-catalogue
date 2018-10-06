@@ -11,6 +11,7 @@ import { AuthService } from '../shared/auth.service';
 export class ProductsComponent implements OnInit {
 
   products: any = [];
+  filteredProducts: any = [];
   constructor(
     private productService: ProductService, 
     private router: Router,
@@ -20,7 +21,10 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
     this.productService.getAllProducts().subscribe(
-      (products) => this.products = products,
+      (products) => {
+        this.products = products;
+        this.productService.setProducts(this.products);
+      },
       (error) => console.log(error)
     );
   }
@@ -43,6 +47,18 @@ export class ProductsComponent implements OnInit {
 
   isAdmin() {
     return this.authService.hasAdminRole();
+  }
+
+  filterProducts(element) {
+    var products = this.productService.products;
+    this.filteredProducts = products.filter((product) => {
+      return product.productName.indexOf(element.target.value) !== -1
+    });
+    if (this.filteredProducts && element.target.value) {
+      this.products = this.filteredProducts;
+    } else {
+      this.refreshProductsList();
+    }
   }
 
 }

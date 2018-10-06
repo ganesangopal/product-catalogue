@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ProductService {
 
+  products: any = [];
   constructor(private http: HttpClient) { }
 
   getAllProducts() {
@@ -14,6 +15,10 @@ export class ProductService {
 
   getProduct(id) {
     return this.http.get('/routes/products/' + id);
+  }
+
+  setProducts(products) {
+    this.products = products;
   }
 
   createProduct(productData) {

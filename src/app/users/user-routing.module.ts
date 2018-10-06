@@ -10,7 +10,6 @@ import { SharedModule } from "../shared/shared.module";
 
 const routes: Routes = [
     { path: '', component: UsersComponent, children: [
-        {path: '', component: UsersComponent},
         {path: ':id/view', component: UserDetailComponent},
         {path: 'add', component: UserAddEditComponent, data: {
           isEditMode: false

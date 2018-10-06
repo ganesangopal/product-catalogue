@@ -1,6 +1,10 @@
 <div *ngIf="isAdmin() && route.children.length === 0">
   <a class="btn btn-primary" routerLink="add">Add User</a>
 </div>
+<div class="col-md-6 mt-3" *ngIf="route.children.length === 0">
+  <label for="filterUser">Filter By Username</label>
+  <input type="text" class="form-control w-50" name="filterUser" (keyup)="filterUsers($event)">
+</div>
 <table class="table mt-5" *ngIf="route.children.length === 0">
   <thead>
     <tr>

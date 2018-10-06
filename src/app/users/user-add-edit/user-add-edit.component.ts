@@ -89,13 +89,19 @@ export class UserAddEditComponent implements OnInit {
       if (!this.isEditMode) {
         this.userService.createUser(this.userForm.value)
         .subscribe(
-          (data) => console.log('successfully created user'),
+          (data) => {
+            this.userService.setUsers(this.userForm.value);
+            console.log('successfully created user');
+          },
           (error) => console.log(error),
           () => this.router.navigate(['/users'])
         );
       } else {
         this.userService.updateUser(this.userId, this.userForm.value).subscribe(
-          (data) => console.log('successfully updated user'),
+          (data) => {
+            this.userService.setUsers(this.userForm.value);
+            console.log('successfully updated user');
+          },
           (error) => console.log(error),
           () => this.router.navigate(['/users'])
         );

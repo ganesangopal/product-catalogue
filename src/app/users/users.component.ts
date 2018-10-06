@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '../shared/auth.service';
 import { UserService } from '../services/user/user.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './users.component.html',
@@ -10,7 +11,8 @@ import { UserService } from '../services/user/user.service';
 })
 export class UsersComponent implements OnInit {
 
-  users: any = [];
+  users: any = this.userService.users;
+  filteredUsers: any = [];
   constructor(
     private userService: UserService, 
     private route: ActivatedRoute,
@@ -18,6 +20,19 @@ export class UsersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // console.log('on init called');
+    // this.route.params
+    //   .pipe(
+    //     switchMap((param) => this.userService.getUsers())
+    //   )
+    //   .subscribe(
+    //     (users) => {
+    //       console.log('users', users);
+    //       this.users = users;
+    //       this.userService.setUsers(this.users);
+    //     },
+    //     (error) => console.log(error)  
+    //   );
     this.userService.getUsers().subscribe(
       (users) => {
         this.users = users;
@@ -45,5 +60,17 @@ export class UsersComponent implements OnInit {
 
   isAdmin() {
     return this.authService.hasAdminRole();
+  }
+
+  filterUsers(element) {
+    var users = this.userService.users;
+    this.filteredUsers = users.filter((user) => {
+      return user.userName.indexOf(element.target.value) !== -1
+    });
+    if (this.filteredUsers && element.target.value) {
+      this.users = this.filteredUsers;
+    } else {
+      this.refreshUsersList();
+    }
   }
 }
