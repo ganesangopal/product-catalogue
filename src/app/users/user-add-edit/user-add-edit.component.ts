@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { AuthService } from '../shared/auth.service';
+
+import { AuthService } from '../../shared/auth.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
-  selector: 'app-user-add-edit',
   templateUrl: './user-add-edit.component.html',
   styleUrls: ['./user-add-edit.component.css']
 })
@@ -37,7 +37,7 @@ export class UserAddEditComponent implements OnInit {
     this.userForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      userName: ['', Validators.required],
+      userName: ['', [Validators.required, this.validateUsername.bind(this)]],
       emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', this.validatePassword.bind(this)]
     });
@@ -60,6 +60,16 @@ export class UserAddEditComponent implements OnInit {
     } else {
       return null;
     }
+  }
+
+  validateUsername(control: FormControl): {[key: string]: any} {
+    if (control.value) {
+      var userName = this.userService.users.find((user) => user.userName === control.value);
+      if (userName) {
+        return {userExists: true}
+      }
+    }
+    return null;
   }
 
   onCancel() {

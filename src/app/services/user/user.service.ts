@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserService {
 
+  users: any[];
   constructor(private http: HttpClient) { }
 
   createUser(userData) {
@@ -24,7 +25,15 @@ export class UserService {
     return this.http.get('/routes/users');
   }
 
+  setUsers(users) {
+    this.users = users;
+  }
+
   getUser(id) {
     return this.http.get('/routes/users/' + id);
+  }
+
+  getUserByName(name) {
+    return this.http.get('/routes/users/name/' + name);
   }
 }

@@ -96,6 +96,15 @@ router.route('/users/:id').get((req, res) => {
     });
 });
 
+router.route('/users/name/:name').get((req, res) => {
+    userModel.find({userName: req.params.name}, function(err, user) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(user);
+    });
+});
+
 router.route('/users/:id').put((req, res) => {
     userModel.findById(req.params.id, function (err, user) {
         if (err) {

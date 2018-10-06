@@ -9,19 +9,21 @@ import { Router } from '@angular/router';
 })
 export class AppComponent  implements OnInit {
   title = 'product-catalogue';
+  currentUser: any;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    console.log(this.authService.isAuthenticated());
+    //console.log(this.authService.isAuthenticated());
+    //this.currentUser = this.authService.getCurrentUser();
   }
 
-  isAuthenticated() {
-    return this.authService.isAuthenticated();
-  }
+  // isAuthenticated() {
+  //   return this.authService.isAuthenticated();
+  // }
 
-  onLogout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
-  }
+  // onLogout() {
+  //   localStorage.removeItem('token');
+  //   this.router.navigate(['/login']);
+  // }
 }

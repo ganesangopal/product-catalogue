@@ -1,20 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { ActivatedRoute } from '@angular/router';
+
 import { AuthService } from '../shared/auth.service';
+import { UserService } from '../services/user/user.service';
 
 @Component({
-  selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
 
   users: any = [];
-  constructor(private userService: UserService, private authService: AuthService) { }
+  constructor(
+    private userService: UserService, 
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     this.userService.getUsers().subscribe(
-      (users) => this.users = users,
+      (users) => {
+        this.users = users;
+        this.userService.setUsers(this.users);
+      },
       (error) => console.log(error)
     );
   }

@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 import { ProductService } from '../../services/product/product.service';
+import { CanComponentDeactivate } from '../../auth-guard.service';
 
 @Component({
-  selector: 'app-product-add-edit',
   templateUrl: './product-add-edit.component.html',
   styleUrls: ['./product-add-edit.component.css']
 })
-export class ProductAddEditComponent implements OnInit {
+export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
 
   isEditMode: boolean;
   productForm: FormGroup;
@@ -78,6 +80,13 @@ export class ProductAddEditComponent implements OnInit {
         );
       }
     }
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.productForm.touched && this.productForm.dirty) {
+		  return confirm('Are you sure you want to leave?');
+	  }
+	  return true;
   }
 
 }

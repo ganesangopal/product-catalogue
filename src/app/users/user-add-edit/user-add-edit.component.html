@@ -35,6 +35,7 @@
         placeholder="Enter your username">
       <div *ngIf="submitted && userForm.controls.userName.errors" class="text-danger">
         <div *ngIf="userForm.controls.userName.errors.required">Username is required</div>
+        <div *ngIf="userForm.controls.userName.errors.userExists">Username already exists</div>
       </div>
     </div>
     <div class="form-group">

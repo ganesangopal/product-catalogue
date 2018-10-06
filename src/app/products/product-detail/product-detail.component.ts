@@ -1,13 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+
 import { ProductService } from '../../services/product/product.service';
 
 @Component({
-  selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
-export class ProductDetailComponent implements OnInit, OnDestroy {
+export class ProductDetailComponent implements OnInit {
   
   id: any;
   routeParamSubscription: any;
@@ -15,19 +16,19 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private productService: ProductService) { }
 
   ngOnInit() {
-    //this.id = this.route.snapshot.params['id'];
-    this.routeParamSubscription = this.route.paramMap.subscribe(params => {
-      console.log(params.get('id'));
-      this.id = params.get('id');
-      this.productService.getProduct(this.id).subscribe(
-        (product) => this.product = product,
-        (error) => console.log(error)
-      );
-    });
+    
+    this.route.params
+      .pipe(
+        switchMap(param => {
+          this.id = param.id;
+          return this.productService.getProduct(this.id);
+        })
+      )
+      .subscribe(product => this.product = product);
   }
 
-  ngOnDestroy() {
-    this.routeParamSubscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.routeParamSubscription.unsubscribe();
+  // }
 
 }
