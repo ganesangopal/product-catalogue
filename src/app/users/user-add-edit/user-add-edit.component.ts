@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 import { AuthService } from '../../shared/auth.service';
 import { UserService } from '../../services/user/user.service';
+import { switchMap, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: './user-add-edit.component.html',
@@ -64,7 +66,8 @@ export class UserAddEditComponent implements OnInit {
 
   validateUsername(control: FormControl): {[key: string]: any} {
     if (control.value) {
-      var userName = this.userService.users.find((user) => user.userName === control.value);
+      var userName = this.userService.users.find((user) => 
+        user.userName === control.value && user._id !== this.userId);
       if (userName) {
         return {userExists: true}
       }
@@ -84,27 +87,46 @@ export class UserAddEditComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    //this.productForm.valid
     if (this.userForm.valid) {
       if (!this.isEditMode) {
         this.userService.createUser(this.userForm.value)
-        .subscribe(
-          (data) => {
-            this.userService.setUsers(this.userForm.value);
-            console.log('successfully created user');
-          },
-          (error) => console.log(error),
-          () => this.router.navigate(['/users'])
-        );
+          .pipe(
+            switchMap((data) => {
+              console.log('successfully created user');
+              return this.userService.getUserByName(this.userForm.value.userName);
+            }),
+            catchError((e) => {
+              return Observable.throw(e);
+            })
+          )
+          .subscribe(
+            (user) => {
+              var users = this.userService.users;
+              users.push(user[0]);
+            },
+            (error) => console.log(error),
+            () => this.router.navigate(['/users'])
+          );
       } else {
-        this.userService.updateUser(this.userId, this.userForm.value).subscribe(
-          (data) => {
-            this.userService.setUsers(this.userForm.value);
-            console.log('successfully updated user');
-          },
-          (error) => console.log(error),
-          () => this.router.navigate(['/users'])
-        );
+        this.userService.updateUser(this.userId, this.userForm.value)
+          .pipe(
+            switchMap((data) => {
+              console.log('successfully updated user', data);
+              return this.userService.getUser(data['_id']);
+            }),
+            catchError((e) => {
+              return Observable.throw(e);
+            })
+          )
+          .subscribe(
+            (user) => {
+              var users = this.userService.users;
+              var userIndex = users.findIndex(obj => obj['_id'] === user['_id']);
+              users[userIndex] = user;
+            },
+            (error) => console.log(error),
+            () => this.router.navigate(['/users'])
+          );
       }
     }
   }

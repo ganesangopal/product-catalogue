@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '../shared/auth.service';
@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, AfterViewInit {
 
   users: any = this.userService.users;
   filteredUsers: any = [];
@@ -17,10 +17,12 @@ export class UsersComponent implements OnInit {
     private userService: UserService, 
     private route: ActivatedRoute,
     private authService: AuthService
-  ) { }
+  ) {
+    console.log('constructor called');
+  }
 
   ngOnInit() {
-    // console.log('on init called');
+    console.log('on init called');
     // this.route.params
     //   .pipe(
     //     switchMap((param) => this.userService.getUsers())
@@ -42,6 +44,10 @@ export class UsersComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit() {
+    console.log('this view called');
+  }
+
   deleteUser(userData) {
     if (confirm("Are you sure you want to delete user " + userData.userName)) {
       this.userService.deleteUser(userData._id).subscribe(
@@ -53,7 +59,10 @@ export class UsersComponent implements OnInit {
 
   refreshUsersList() {
     this.userService.getUsers().subscribe(
-      (users) => this.users = users,
+      (users) => {
+        this.users = users;
+        this.userService.setUsers(this.users);
+      },
       (error) => console.log(error)
     );
   }

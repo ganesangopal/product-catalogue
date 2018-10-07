@@ -35,7 +35,7 @@ export class AuthGuardService implements CanActivate, CanDeactivate<CanComponent
     console.log('Url: '+ url);
     //alert('hello');
 
-    return component.canDeactivate ? component.canDeactivate() : false;
+    return component.canDeactivate ? component.canDeactivate() : true;
   }
 
 }

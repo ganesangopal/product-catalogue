@@ -10,7 +10,7 @@ import { AuthService } from '../shared/auth.service';
 })
 export class ProductsComponent implements OnInit {
 
-  products: any = [];
+  products: any = this.productService.products;
   filteredProducts: any = [];
   constructor(
     private productService: ProductService, 
@@ -40,7 +40,10 @@ export class ProductsComponent implements OnInit {
 
   refreshProductsList() {
     this.productService.getAllProducts().subscribe(
-      (products) => this.products = products,
+      (products) => {
+        this.products = products;
+        this.productService.setProducts(this.products);
+      },
       (error) => console.log(error)
     );
   }

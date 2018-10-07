@@ -26,6 +26,7 @@ export class UserService {
   }
 
   setUsers(users) {
+    console.log('users', users);
     this.users = users;
   }
 

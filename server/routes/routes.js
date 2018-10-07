@@ -119,7 +119,7 @@ router.route('/users/:id').put((req, res) => {
             if (err)
                 res.send(err);
 
-            res.send({ message: 'User updated!' });
+            res.send(user);
         });
         //res.json(user);
     });
@@ -152,7 +152,8 @@ router.route('/products').post((req, res) => {
             if (err) {
                 res.send(err);
             }
-            res.send({ message: 'Product Created !' });
+            //res.send({ message: 'Product Created !' });
+            res.send(p);
         });
     } else {
         console.log('else part');
@@ -198,7 +199,8 @@ router.route('/products/:id').put((req, res) => {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'Product updated!' });
+            //res.json({ message: 'Product updated!' });
+            res.send(prod);
         });
     });
     //res.status(200).json(currentProduct);
