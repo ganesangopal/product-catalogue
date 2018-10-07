@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterContentInit, AfterContentChecked, OnChanges, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '../shared/auth.service';
@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit, AfterViewInit {
+export class UsersComponent implements OnInit, AfterViewInit, AfterContentInit, AfterContentChecked, OnChanges, AfterViewChecked {
 
   users: any = this.userService.users;
   filteredUsers: any = [];
@@ -45,7 +45,23 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log('this view called');
+    console.log('after view init called');
+  }
+
+  ngAfterContentChecked() {
+    console.log('after content checked called');
+  }
+
+  ngAfterViewChecked() {
+    console.log('after view checked called');
+  }
+
+  ngAfterContentInit() {
+    console.log('after content init called');
+  }
+
+  ngOnChanges() {
+    console.log('on changes called');
   }
 
   deleteUser(userData) {
