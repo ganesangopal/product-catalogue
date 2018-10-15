@@ -7,12 +7,14 @@ const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/productsCatalogue', {useNewUrlParser: true});
 
-// Getting our POSTS routes.
+// Getting our routes.
 const routes = require('./server/routes/routes');
 const userRoutes = require('./server/routes/users');
 const productRoutes = require('./server/routes/products');
+
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
+
 // Using middleware.
 app.use(express.static(path.join(__dirname, 'dist/product-catalogue')));
 app.use(cors());
