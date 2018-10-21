@@ -1,23 +1,19 @@
 (function() {
     'use strict';
     const userModel = require('../models/User.model');
+    const validationHelper = require('../helpers/helper.validation');
     const emailValidator = require('./email.validator');
     const userRequiredFields = ['firstName', 'lastName', 'userName', 'emailAddress', 'password'];
-    exports.isAdmin = function isCurrentUserAdminRole(req) {
-        var isAdmin = false;
-        if (req.userData && req.userData.roles.indexOf('administrator') !== -1) {
-            isAdmin = true;
-        }
-        return isAdmin;
-    }
+
+    exports.isAdmin = validationHelper.isAdmin;
 
     exports.userCreateValidator = async function validateBeforeUserCreate(userData) {
         var validation = {};
-        validation = isRequestBodyEmpty(userData, 'create', 'user');
+        validation = validationHelper.isRequestBodyEmpty(userData, 'create', 'user');
         if (validation.error) {
             return validation;
         }
-        validation = validateRequiredFields(userData);
+        validation = validationHelper.validateRequiredFields(userData, userRequiredFields);
         if (validation.error) {
             return validation;
         }
@@ -40,7 +36,7 @@
     }
 
     exports.userUpdateValidator = async function validateBeforeUserUpdate(userData, userId) {
-        var validation = isRequestBodyEmpty(userData, 'update', 'user');
+        var validation = validationHelper.isRequestBodyEmpty(userData, 'update', 'user');
         if (validation.error) {
             return validation;
         }
@@ -63,39 +59,9 @@
         return { error: false };
     }
 
-    function validateRequiredFields(userData, validation) {
-        var requiredError = [];
-        for (var userField in userRequiredFields) {
-            console.log('userfield', userField);
-            var fieldName = userRequiredFields[userField];
-            if (!userData[fieldName]) {
-                requiredError.push(fieldName + ' is required.');
-                //console.log(fieldName + ' is required.');
-            }
-        }
-        if (requiredError.length > 0) {
-            return {
-                error: true,
-                message: requiredError
-            }
-        }
-        return { error: false };
-    }
-
     function validateEmailAddress(emailAddress) {
         if (!emailValidator.validate(emailAddress)) {
             return { error: true, message: 'Invalid email address.' };
-        }
-        return { error: false };
-    }
-
-    function isRequestBodyEmpty(data, method, entity) {
-        var operation = method === 'create' ? 'create ' + entity : 'update ' + entity;
-        if (Object.keys(data).length <= 0) {
-            return {
-                error: true,
-                message: 'Please send atleast one field to ' + operation,
-            };
         }
         return { error: false };
     }

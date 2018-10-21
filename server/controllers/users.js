@@ -1,7 +1,6 @@
 (function() {
     const userModel = require('../models/User.model');
     const userValidator = require('../validations/user.validator');
-    // const userRequiredFields = ['firstName', 'lastName', 'userName', 'emailAddress', 'password'];
 
     exports.getAllUsers = (req, res) => {
         console.log('Request object',req.user);
@@ -103,11 +102,14 @@
     exports.deleteUser = function (req, res) {
         var isAdmin = userValidator.isAdmin(req);
         if (isAdmin) {
-            userModel.deleteOne({ _id: req.params.id }, function (err, user) {
+            userModel.deleteOne({ _id: req.params.id }, function (err, result) {
                 if (err) {
                     res.send(err);
+                } else if (result.n) {
+                    res.json({ message: 'Successfully deleted' });
+                } else {
+                    res.status(404).send('No user found to delete for the specified id.');
                 }
-                res.json({ message: 'Successfully deleted' });
             });
         } else {
             res.status(401).send('Not Authorized to delete the user.');

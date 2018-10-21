@@ -79,11 +79,14 @@ exports.updateProduct = (req, res) => {
 exports.deleteProduct = function (req, res) {
     var isAdmin = productValidator.isAdmin(req);
     if (isAdmin) {
-        productModel.deleteOne({ _id: req.params.id }, function (err, prod) {
+        productModel.deleteOne({ _id: req.params.id }, function (err, result) {
             if (err) {
                 res.send(err);
+            } else if (result.n) {
+                res.json({ message: 'Successfully deleted' });
+            } else {
+                res.status(404).send('No product found to delete for the specified id.');
             }
-            res.json({ message: 'Successfully deleted' });
         });
     } else {
         res.status(401).send('Not Authorized to delete the product.');
