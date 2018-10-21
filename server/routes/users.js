@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const users = require('../controllers/users');
+const tokenManager = require('../config/tokenManager');
 
 // User Routes
 router.route('/').get(users.getAllUsers);

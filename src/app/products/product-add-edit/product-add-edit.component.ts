@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { ProductService } from '../../services/product/product.service';
@@ -32,7 +32,7 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
       //_id: [],
       //instock: [],
       productName: ['', Validators.required],
-      productsku: ['', Validators.required],
+      productsku: ['', [Validators.required, this.validateProductSku.bind(this)]],
       price: ['', Validators.required]
     });
     if (this.isEditMode) {
@@ -45,6 +45,17 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
         (error) => console.log(error)
       );
     }
+  }
+
+  validateProductSku(control: FormControl): {[key: string]: any} {
+    if (control.value) {
+      var productsku = this.productService.products.find((product) => 
+        product.productsku === control.value && product._id !== this.productId);
+      if (productsku) {
+        return {productExists: true}
+      }
+    }
+    return null;
   }
 
   onCancel() {
@@ -87,6 +98,7 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
               return this.productService.getProduct(data['_id']);
             }),
             catchError((e) => {
+              console.log('product error', e);
               return Observable.throw(e);
             })
           )

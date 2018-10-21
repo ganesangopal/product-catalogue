@@ -23,6 +23,7 @@
         placeholder="Enter your product sku">
       <div *ngIf="submitted && productForm.controls.productsku.errors" class="text-danger">
         <div *ngIf="productForm.controls.productsku.errors.required">SKU is required</div>
+        <div *ngIf="productForm.controls.productsku.errors.productExists">Sku already exists</div>
       </div>
     </div>
     <div class="form-group">

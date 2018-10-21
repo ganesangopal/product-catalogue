@@ -23,16 +23,13 @@
     var createToken = function(data, req) {
         if (data) {
             var user = data;
-            //TOKEN_EXPIRATION_SEC = ((req.app.locals.Organization && req.app.locals.Organization.tokenExpiration) || TOKEN_EXPIRATION) * 60;
-      
-            
             var token = jwt.sign({
               _id: user._id,
               roles: user.roles,
               firstName: user.firstName,
               lastName: user.lastName,
               userName: user.userName
-            }, secret);
+            }, secret, {expiresIn: 60 * 75});
             if (token) {
               console.log('Token assigned');
             }
@@ -78,4 +75,25 @@
           return next();
         }
     };
+
+    exports.verifyToken = function(req, res) {
+      var token = '';
+      if (req && req.headers) {
+        token = getToken(req.headers);
+      }
+      if (token) {
+        try {
+          var decodedUser = jwt.verify(token, secret);
+          req.userData = decodedUser;
+        }
+        catch(e) {
+          console.log('error', e);
+          throw new Error(e.message);
+          //res.status(500).send({name: e.name, message: e.message});
+        }
+      }
+      else {
+        throw new Error('Please provide the token.');
+      }
+    }
 })();
