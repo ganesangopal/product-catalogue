@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const routes = require('./server/routes/routes');
 const userRoutes = require('./server/routes/users');
 const productRoutes = require('./server/routes/products');
+const uploadRoutes = require('./server/routes/uploads');
 
 // Using middleware.
 app.use(express.static(path.join(__dirname, 'dist/product-catalogue')));
@@ -20,6 +21,7 @@ mongoose.connect('mongodb://localhost/productsCatalogue', {useNewUrlParser: true
 app.use('/routes', routes);
 app.use('/routes/users', userRoutes);
 app.use('/routes/products', productRoutes);
+app.use('/routes/uploads', uploadRoutes);
 
 // Catch all other routes request and return it to the index.
 app.get('*', (req, res) => {
