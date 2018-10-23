@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -21,7 +21,8 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -33,14 +34,16 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
       //instock: [],
       productName: ['', Validators.required],
       productsku: ['', [Validators.required, this.validateProductSku.bind(this)]],
-      price: ['', Validators.required]
+      price: ['', Validators.required],
+      productImage: ['', Validators.required]
     });
     if (this.isEditMode) {
       this.productService.getProduct(this.route.snapshot.params.id).subscribe(
         (data) => this.productForm.setValue({
           productName: data['productName'],
           productsku: data['productsku'],
-          price: data['price']
+          price: data['price'],
+          productImage: ''
         }),
         (error) => console.log(error)
       );
@@ -56,6 +59,24 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
       }
     }
     return null;
+  }
+
+  onProductImageUpload(event) {
+    let reader = new FileReader();
+ 
+    if(event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+    
+      reader.onload = () => {
+        this.productForm.patchValue({
+          productImage: reader.result
+        });
+        
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
+    }
   }
 
   onCancel() {
