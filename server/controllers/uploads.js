@@ -15,9 +15,9 @@
     });
 
     var fileFilter = function(req, file, cb) {
-        if (path.extname(file.originalname) !== '.pdf') {
-          return cb(new Error('Only pdfs are allowed'));
-        }
+        // if (path.extname(file.originalname) !== '.pdf') {
+        //   return cb(new Error('Only pdfs are allowed'));
+        // }
     
         cb(null, true);
     };
@@ -30,7 +30,7 @@
     exports.diskStorage = upload.array('file', 3);
 
     exports.uploadFiles = (req, res) => {
-        //console.log(req.files);
+        console.log(req.file);
         res.send('File uploaded successfully');
     };
 })();

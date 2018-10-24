@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ProductService } from '../../services/product/product.service';
 import { CanComponentDeactivate } from '../../auth-guard.service';
 import { switchMap, catchError } from 'rxjs/operators';
+import { UploadService } from '../../services/uploads/upload.service';
 
 @Component({
   templateUrl: './product-add-edit.component.html',
@@ -17,12 +18,14 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
   productForm: FormGroup;
   submitted: boolean = false;
   productId: String;
+  uploadedFile: any = [];
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
     private productService: ProductService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private uploadService: UploadService
   ) { }
 
   ngOnInit() {
@@ -65,15 +68,26 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
     let reader = new FileReader();
  
     if(event.target.files && event.target.files.length) {
+      this.uploadedFile = event.target.files[0];
       const [file] = event.target.files;
-      reader.readAsDataURL(file);
+      console.log('file input old', file);
+      console.log('file input', this.uploadedFile);
+      reader.readAsDataURL(this.uploadedFile);
     
-      reader.onload = () => {
-        this.productForm.patchValue({
-          productImage: reader.result
-        });
-        
-        // need to run CD since file load runs outside of zone
+      reader.onload = (e) => {
+        // this.productForm.patchValue({
+        //   productImage: 'imagenewfile.jpg'
+        // });
+        var image = new Image();
+        // Set the Base64 string return from FileReader as source.
+        image.src = e.target['result'];
+        console.log('image source', image.src);
+        image.onload = (event) => {
+          console.log('event log', event);
+            
+          this.upload('image');
+        };
+          // need to run CD since file load runs outside of zone
         this.cd.markForCheck();
       };
     }
@@ -134,6 +148,13 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
           );
       }
     }
+  }
+
+  upload(type) {
+    this.uploadService.uploadImage(this.uploadedFile).subscribe(
+      (data) => console.log('data uploaded', data),
+      (error) => console.log('error', error)
+    );
   }
 
   canDeactivate(): Observable<boolean> | boolean {
