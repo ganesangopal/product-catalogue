@@ -12,7 +12,8 @@ router.use(function (req, res, next) {
         req.headers.authorization = req.headers['x-api-key'];
     }
     var methods = ['POST', 'PUT', 'DELETE'];
-    if (methods.includes(req.method) && req.url !== '/uploads/files' && req.url !== '/login' && req.url !== '/logout') {
+    var ignorePaths = ['/login', '/logout', '/uploads/files'];
+    if (methods.includes(req.method) && !ignorePaths.includes(req.url)) {
         tokenManager.verifyToken(req, res);
     }
     next(); // make sure we go to the next routes and don't stop here
