@@ -1,5 +1,6 @@
 const productModel = require('../models/Product.model');
 const productValidator = require('../validations/product.validator');
+const fs = require('fs');
 
 exports.getAllProducts = (req, res) => {
     productModel.find(function (err, products) {
@@ -11,6 +12,7 @@ exports.getAllProducts = (req, res) => {
 };
 
 exports.createProduct = (req, res) => {
+    console.log('product file', req.session.tmpfile);
     var isAdmin = productValidator.isAdmin(req);
     if (isAdmin && Object.keys(req.body).length > 0) {
         productValidator.productCreateValidator(req.body).then((validation) => {
@@ -22,12 +24,27 @@ exports.createProduct = (req, res) => {
                 p.price = req.body.price;
                 p.instock = true;
                 p.productsku = req.body.productsku;
-                p.save(function (err) {
-                    if (err) {
-                        res.send(err);
-                    }
-                    res.send(p);
+                var newPath = './src/assets/products/' + req.session.tmpfile.filename;
+                fs.rename(req.session.tmpfile.path, newPath, function(err) {
+                    console.log('came to fs');
+                    fs.stat(newPath, (err, stats) => {
+                        if (err) {
+                            throw err;
+                        } else {
+                            fs.unlink(req.session.tmpfile.path, function(err) {
+                                p.productImage = newPath;
+                                p.save(function (err) {
+                                    if (err) {
+                                        res.send(err);
+                                    }
+                                    res.send(p);
+                                });
+                            });
+                        }
+                        console.log(`stats: ${JSON.stringify(stats)}`);
+                    });
                 });
+                
             }
         });
     } else if (!isAdmin) {

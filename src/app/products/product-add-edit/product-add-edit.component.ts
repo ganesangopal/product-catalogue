@@ -69,8 +69,8 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
  
     if(event.target.files && event.target.files.length) {
       this.uploadedFile = event.target.files[0];
-      const [file] = event.target.files;
-      console.log('file input old', file);
+      //const [file] = event.target.files;
+      //console.log('file input old', file);
       console.log('file input', this.uploadedFile);
       reader.readAsDataURL(this.uploadedFile);
     
@@ -87,6 +87,7 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
             
           this.upload('image');
         };
+        //this.upload('file');
           // need to run CD since file load runs outside of zone
         this.cd.markForCheck();
       };
@@ -153,7 +154,7 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
   upload(type) {
     this.uploadService.uploadImage(this.uploadedFile).subscribe(
       (data) => console.log('data uploaded', data),
-      (error) => console.log('error', error)
+      (error) => console.log('error data', error)
     );
   }
 

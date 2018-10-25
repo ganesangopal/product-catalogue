@@ -44,6 +44,7 @@
         type="file" 
         class="form-control w-50" 
         formControlName="productImage" 
+        name="productImage" 
         id="productimage" 
         (change)="onProductImageUpload($event)">
       <div *ngIf="submitted && productForm.controls.productImage.errors" class="text-danger">

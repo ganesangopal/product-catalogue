@@ -6,5 +6,6 @@ var ProductSchema = new Schema({
     price: Number,
     instock: Boolean,
     productsku: String,
+    productImage: String
 });
 module.exports = mongoose.model('Product', ProductSchema);

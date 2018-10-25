@@ -4,12 +4,14 @@
     const bodyParser = require('body-parser');
     const cookieParser = require('cookie-parser');
     const session = require('express-session');
+    //const busboy = require('connect-busboy');
 
     module.exports = function(app) {
         console.log('express included');
         app.use(cookieParser());
         app.use(bodyParser.urlencoded({ extended: false}));
         app.use(bodyParser.json());
+        //app.use(busboy());
         app.use(session({ 
             secret: 'anything',
             key: 'sid',
