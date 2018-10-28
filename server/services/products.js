@@ -2,6 +2,8 @@
     'use strict';
     const productModel = require('../models/Product.model');
     const productValidator = require('../validations/product.validator');
+    const fs = require('fs');
+    const config = require('../config/config');
 
     exports.getAllProducts = (req, res) => {
         productModel.find(function (err, products) {
@@ -26,47 +28,32 @@
         p.price = req.body.price;
         p.instock = true;
         p.productsku = req.body.productsku;
-        var p = new productModel();
-        p.productName = req.body.productName;
-        p.price = req.body.price;
-        p.instock = true;
-        p.productsku = req.body.productsku;
-        p.save(function (err) {
-            if (err) {
-                res.send(err);
-            }
-            if (req.file) {
-                var newPath = './src/assets/products/' + req.file.filename;
-                fs.rename(req.file.path, newPath, function(err) {
-                    console.log('came to fs');
-                    fs.stat(newPath, (err, stats) => {
-                        if (err) {
-                            throw err;
-                        } else {
-                            fs.unlink(req.file.path, function(err) {
-                                //p.productImage = newPath;
-                                var query = {_id: p._id};
-                                var productImage = {productImage: newPath};
-                                productModel.updateOne(query, productImage, {}, function(err, doc){
-                                    if (err) return res.send(500, { error: err });
-                                    p.productImage = newPath
-                                    return res.send(p);
-                                });
-                                // p.save(function (err) {
-                                //     if (err) {
-                                //         res.send(err);
-                                //     }
-                                //     res.send(p);
-                                // });
-                            });
-                        }
-                        console.log(`stats: ${JSON.stringify(stats)}`);
-                    });
+        console.log('file input', req.file);
+        if (req.file) {
+            var newPath = './' + config.productImageDir + '/' + req.file.filename;
+            fs.rename('./' + req.file.path, newPath, function(err) {
+                fs.stat(newPath, (err, stats) => {
+                    if (err) {
+                        return res.send(err);
+                    } else {
+                        p.productImage = newPath;
+                        p.save(function (err) {
+                            if (err) {
+                                return res.send(err);
+                            }
+                            res.send(p);
+                        });
+                    }
                 });
-            } else {
+            });
+        } else {
+            p.save(function (err) {
+                if (err) {
+                    return res.send(err);
+                }
                 res.send(p);
-            }
-        });
+            });
+        }
     }
 
     exports.updateProduct = (req, res) => {
@@ -80,35 +67,42 @@
                     console.log('validation result', validation);
                     res.status(400).send(validation.message);
                 } else if (prod) {
-                    prod.productName = req.body.productName ? req.body.productName : prod.productName;
-                    prod.price = req.body.price ? req.body.price : prod.price;
-                    prod.instock = req.body.instock ? req.body.instock : prod.instock;
-                    prod.productsku = req.body.productsku ? req.body.productsku : prod.productsku;
-                    prod.save(function (err) {
-                        if (err) {
-                            res.send(err);
-                        }
-                        if (req.file) {
-                            var newPath = './src/assets/products/' + req.file.filename;
-                            fs.rename(req.file.path, newPath, function(err) {
-                                console.log('came to fs');
-                                fs.stat(newPath, (err, stats) => {
-                                    if (err) {
-                                        throw err;
+                    if (req.file) {
+                        var newPath = './src/assets/products/' + req.file.filename;
+                        fs.rename(req.file.path, newPath, function(err) {
+                            console.log('came to fs');
+                            fs.stat(newPath, (err, stats) => {
+                                if (err) {
+                                    throw err;
+                                } else {
+                                    if (prod.productImage !== newPath && fs.existsSync(prod.productImage)) {
+                                        fs.unlink(prod.productImage, function(err) {
+                                            if (err) return res.send(err);
+                                            var query = {_id: prod._id};
+                                            req.body.productImage = newPath;
+                                            productModel.findOneAndUpdate(query, req.body, {new: true}, function(err, doc){
+                                                if (err) return res.send(500, { error: err });
+                                                return res.send(doc);
+                                            });
+                                        });
                                     } else {
                                         var query = {_id: prod._id};
-                                        var productImage = {productImage: newPath};
-                                        productModel.updateOne(query, productImage, {}, function(err, doc){
+                                        req.body.productImage = newPath;
+                                        productModel.findOneAndUpdate(query, req.body, {new: true}, function(err, doc){
                                             if (err) return res.send(500, { error: err });
-                                            return res.send(prod);
+                                            return res.send(doc);
                                         });
                                     }
-                                });
+                                }
                             });
-                        } else {
-                            res.send(prod);
-                        }
-                    });
+                        });
+                    } else {
+                        var query = {_id: prod._id};
+                        productModel.findOneAndUpdate(query, req.body, {new:true}, function(err, doc){
+                            if (err) return res.send(500, { error: err });
+                            return res.send(doc);
+                        });
+                    }
                 } else {
                     res.status(404).send({message: 'No product found for the specified id'});
                 }
@@ -117,11 +111,21 @@
     };
 
     exports.deleteProduct = (req, res) => {
-        productModel.deleteOne({ _id: req.params.id }, function (err, result) {
+        productModel.findOneAndDelete({ _id: req.params.id }, function (err, result) {
             if (err) {
                 res.send(err);
-            } else if (result.n) {
-                res.json({ message: 'Successfully deleted' });
+            } else if (result) {
+                console.log('deleted data', result);
+                if (result.productImage && fs.existsSync(result.productImage)) {
+                    fs.unlink(result.productImage, function(err, data) {
+                        if (err) {
+                            return res.send(err);
+                        }
+                        res.json({ message: 'Successfully deleted' });
+                    });
+                } else {
+                    res.json({ message: 'Successfully deleted' });
+                }
             } else {
                 res.status(404).send('No product found to delete for the specified id.');
             }

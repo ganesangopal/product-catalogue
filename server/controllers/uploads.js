@@ -4,12 +4,13 @@
     const multer = require('multer');
     const path = require('path');
     const fs = require('fs');
+    const config = require('../config/config');
 
 
     var Storage = multer.diskStorage({
         destination: function(req, file, callback) {
             console.log('file details', file);
-            callback(null, "./src/assets/products");
+            callback(null, "./" + config.productTmpImgDir);
         },
         filename: function(req, file, callback) {
             callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -17,9 +18,13 @@
     });
 
     var fileFilter = function(req, file, cb) {
-        // if (path.extname(file.originalname) !== '.pdf') {
-        //   return cb(new Error('Only pdfs are allowed'));
-        // }
+        var fileExtensions = ['.png', '.jpg'];
+        console.log('file', path.extname(file.originalname));
+        if (file && fileExtensions.indexOf(path.extname(file.originalname)) === -1) {
+          return cb(new Error('Only image with png or jpg extensions are allowed'));
+        }
+        console.log('body', req.body);
+        console.log('file', file);
     
         cb(null, true);
     };

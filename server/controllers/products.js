@@ -10,7 +10,6 @@
     };
 
     exports.createProduct = (req, res) => {
-        console.log('product file', req.session.tmpfile);
         var isAdmin = productValidator.isAdmin(req);
         if (isAdmin && Object.keys(req.body).length > 0) {
             productValidator.productCreateValidator(req.body).then((validation) => {
