@@ -16,6 +16,7 @@ router.use(function (req, res, next) {
     if (methods.includes(req.method) && !ignorePaths.includes(req.url)) {
         tokenManager.verifyToken(req, res);
     }
+    console.log('valid input');
     next(); // make sure we go to the next routes and don't stop here
 });
 

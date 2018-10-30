@@ -1,9 +1,7 @@
 (function() {
     'use strict';
-    const productModel = require('../models/Product.model');
     const productValidator = require('../validations/product.validator');
     const productService = require('../services/products');
-    const fs = require('fs');
 
     exports.getAllProducts = (req, res) => {
         productService.getAllProducts(req, res);
@@ -12,17 +10,16 @@
     exports.createProduct = (req, res) => {
         var isAdmin = productValidator.isAdmin(req);
         if (isAdmin && Object.keys(req.body).length > 0) {
-            productValidator.productCreateValidator(req.body).then((validation) => {
-                if (validation.error) {
-                    res.status(400).send(validation.message);
-                } else {
-                    productService.createProduct(req, res);
+            productValidator.productCreateValidator(req.body, function(err, errCode) {
+                if (err) {
+                    return res.status(errCode).send(err);
                 }
+                productService.createProduct(req, res);
             });
         } else if (!isAdmin) {
             res.status(401).send('Not authorised to create product.');
         } else {
-            res.send({error: 'Bad request'});
+            res.status(400).send({error: 'Bad request'});
         }
     };
 
@@ -46,6 +43,5 @@
         } else {
             res.status(401).send('Not Authorized to delete the product.');
         }
-
     };
 })();

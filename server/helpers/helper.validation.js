@@ -1,5 +1,6 @@
 (function() {
     'use strict';
+    const productModel = require('../models/Product.model');
 
     exports.isAdmin = function isCurrentUserAdminRole(req) {
         var isAdmin = false;
@@ -7,6 +8,20 @@
             isAdmin = true;
         }
         return isAdmin;
+    }
+
+    exports.validateProductSku = function(productData, productId, callback) {
+        console.log('product data', productData);
+        productModel.find({productsku: productData.productsku, _id: {$ne: productId}}, function(err, product) {
+            if (err) {
+                callback(err, 500);
+            }
+            else if (product.length > 0) {
+                callback('Product sku already exists', 400);
+            } else {
+                callback(null, null);
+            }
+        });
     }
 
     exports.isRequestBodyEmpty = function isRequestBodyEmpty(data, method, entity) {
