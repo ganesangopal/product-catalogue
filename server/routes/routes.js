@@ -8,11 +8,8 @@ router.use(function (req, res, next) {
     // do logging 
     // do authentication 
     console.log('Logging of request url ' + req.url);
-    if (req && req.headers['x-api-key'] && typeof req.headers['x-api-key'] === 'string') {
-        req.headers.authorization = req.headers['x-api-key'];
-    }
     var methods = ['POST', 'PUT', 'DELETE'];
-    var ignorePaths = ['/login', '/logout', '/uploads/files'];
+    var ignorePaths = ['/login', '/logout'];
     if (methods.includes(req.method) && !ignorePaths.includes(req.url)) {
         tokenManager.verifyToken(req, res);
     }

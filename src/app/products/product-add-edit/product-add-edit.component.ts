@@ -38,7 +38,7 @@ export class ProductAddEditComponent implements OnInit, CanComponentDeactivate {
       productName: ['', Validators.required],
       productsku: ['', [Validators.required, this.validateProductSku.bind(this)]],
       price: ['', Validators.required],
-      productImage: ['', Validators.required]
+      productImage: ['']
     });
     if (this.isEditMode) {
       this.productService.getProduct(this.route.snapshot.params.id).subscribe(
