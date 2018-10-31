@@ -17,12 +17,23 @@
         if (validation.error) {
             return validation;
         }
-        // Check if username already exists, if so return error message.
+
+        // Check if given email address is valid, if not valid return error message.
+        validation = validateEmailAddress(userData.emailAddress);
+        if (validation.error) {
+            return validation;
+        }
+
+        // Check if username/emailaddress already exists, if so return error message.
         try {
-            var user = await userModel.find({userName: userData.userName});
-            if (user.length > 0) {
-                console.log('user exists', user);
-                return { error: true, message: 'Username already exists.'};
+            var existingUser = await userModel.find({
+                $or: [
+                   { userName: userData.userName },
+                   { emailAddress: userData.emailAddress }
+                ]
+            });
+            if (existingUser.length > 0) {
+                return { error: true, message: 'Username/Email Address already exists.'};
             } else {
                 return { error: false };
             }
@@ -30,9 +41,6 @@
         catch(err) {
             return { error: true, message: err };
         }
-        // Check if given email address is valid, if not valid return error message.
-        validation = validateEmailAddress(userData.emailAddress);
-        return validation;
     }
 
     exports.userUpdateValidator = async function validateBeforeUserUpdate(userData, userId) {
@@ -40,21 +48,29 @@
         if (validation.error) {
             return validation;
         }
-        if (userData.userName) {
+        if (userData.emailAddress) {
+            var validation = validateEmailAddress(userData.emailAddress);
+            if (validation.error) {
+                return validation;
+            }
+        }
+        // Check whether given username or email address already exists in different id.
+        if (userData.userName || userData.emailAddress) {
             try {
-                var existingUser = await userModel.find({userName: userData.userName});
+                var existingUser = await userModel.find({
+                    $or: [
+                       { userName: userData.userName },
+                       { emailAddress: userData.emailAddress }
+                    ]
+                });
                 // If same username exists in different id, then return message as username exists.
                 if (Object.keys(existingUser).length && existingUser[0].id !== userId) {
-                    return { error: true, message: 'Username already exists.'};
+                    return { error: true, message: 'Username/Email address already exists.'};
                 }
             }
             catch(error) {
                 return {error: true, message: error};
             }
-        }
-        if (userData.emailAddress) {
-            var validation = validateEmailAddress(userData.emailAddress);
-            return validation;
         }
         return { error: false };
     }
