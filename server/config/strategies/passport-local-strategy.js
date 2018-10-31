@@ -3,6 +3,7 @@
     var passport = require('passport');
     var LocalStrategy = require('passport-local').Strategy;
     var userModel = require('../../models/User.model');
+    var encrypt = require('../../helpers/encryption');
 
     module.exports = function() {
         passport.use(new LocalStrategy(
@@ -14,7 +15,8 @@
                     if (!user) {
                         return done(null, false, { message: 'Incorrect username.' });
                     }
-                    if (user.password !== password) {
+                    var hashedPwd =  encrypt.hashPwd(user.salt, password);
+                    if (hashedPwd !== user.password) {
                         return done(null, false, { message: 'Incorrect password.' });
                     }
                     return done(null, user);

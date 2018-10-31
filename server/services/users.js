@@ -2,6 +2,7 @@
     'use strict';
     const userModel = require('../models/User.model');
     const userValidator = require('../validations/user.validator');
+    const encrypt = require('../helpers/encryption');
 
     exports.getAllUsers = (req, res) => {
         userModel.find(function (err, users) {
@@ -18,7 +19,8 @@
         user.lastName = req.body.lastName;
         user.userName = req.body.userName;
         user.emailAddress = req.body.emailAddress;
-        user.password = req.body.password;
+        user.salt = encrypt.createSalt();
+        user.password = encrypt.hashPwd(user.salt, req.body.password);
         if (req.body.userName === 'admin') {
             user.roles.push('administrator');
         } else {
@@ -65,7 +67,10 @@
                     user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
                     user.userName = req.body.userName ? req.body.userName : user.userName;
                     user.emailAddress = req.body.emailAddress ? req.body.emailAddress : user.emailAddress;
-                    user.password = req.body.password ? req.body.password : user.password;
+                    if (req.body.password) {
+                        user.salt = encrypt.createSalt();
+                        user.password = encrypt.hashPwd(user.salt, req.body.password);
+                    }
                     user.save(function (err) {
                         if (err)
                             res.send(err);
