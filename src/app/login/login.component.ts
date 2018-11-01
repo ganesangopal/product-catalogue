@@ -15,6 +15,8 @@ export class LoginComponent implements OnInit {
     username: '',
     password: ''
   }
+  errorMessage = '';
+  submitted = false;
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -22,6 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     this.userData.username = this.loginForm.value.username;
     this.userData.password = this.loginForm.value.password;
     this.authService.onLogin(this.userData).subscribe(
@@ -29,8 +32,10 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', data.token);
         this.router.navigate(['/products']);
       },
-      (error) => console.log(error)
-    );;
+      (error) => {
+        this.errorMessage = error.error.reason;
+      }
+    );
   }
 
 }

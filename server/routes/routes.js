@@ -8,7 +8,7 @@ router.use(function (req, res, next) {
     // do logging 
     // do authentication 
     console.log('Logging of request url ' + req.url);
-    var methods = ['POST', 'PUT', 'DELETE'];
+    var methods = ['GET', 'POST', 'PUT', 'DELETE'];
     var ignorePaths = ['/login', '/logout'];
     if (methods.includes(req.method) && !ignorePaths.includes(req.url)) {
         tokenManager.verifyToken(req, res);

@@ -9,28 +9,22 @@ export interface CanComponentDeactivate {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate, CanDeactivate<CanComponentDeactivate> {
+export class RoleGuardService implements CanActivate {
 
   constructor(private authService: AuthService, private router: Router) { }
 
   canActivate(): boolean {
     if (this.authService.isAuthenticated()) {
-      return true;
-    } else {
-      this.router.navigate(['/home']);
-      return false;
+      var currentUser = this.authService.getCurrentUser();
+      if (currentUser.roles.indexOf('administrator') !== -1) {
+        return true;
+      } else {
+        this.router.navigate(['/home']);
+        return false;
+      }
     }
-  }
-
-  canDeactivate(component: CanComponentDeactivate, 
-    route: ActivatedRouteSnapshot, 
-    state: RouterStateSnapshot) {
-
-    let url: string = state.url;
-    console.log('Url: '+ url);
-    //alert('hello');
-
-    return component.canDeactivate ? component.canDeactivate() : true;
+    this.router.navigate(['/home']);
+    return false;
   }
 
 }
