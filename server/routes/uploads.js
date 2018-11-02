@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const uploads = require('../controllers/uploads');
+const productImageUpload = require('../config/productImageUpload');
 
 
 // Upload Routes
 //router.route('/files').post(uploads.uploadFiles);
-router.post('/files', uploads.diskStorage, uploads.uploadFiles);
+router.post('/files', productImageUpload.diskStorage, uploads.uploadFiles);
 
 router.route('/upload-form').get(function(req, res) {
     res.writeHead(200, {'Content-Type': 'text/html'});

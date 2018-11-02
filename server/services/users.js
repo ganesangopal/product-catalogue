@@ -30,6 +30,9 @@
             if (err) {
                 res.send(err);
             } else {
+                user.salt = undefined;
+                user.password = undefined;
+                console.log('user data', user);
                 res.send(user)
             }
         });
@@ -74,7 +77,8 @@
                     user.save(function (err) {
                         if (err)
                             res.send(err);
-
+                        user.salt = undefined;
+                        user.password = undefined;
                         res.send(user);
                     });
                 } else {

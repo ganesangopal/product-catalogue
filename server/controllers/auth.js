@@ -1,21 +1,35 @@
-const userModel = require('../models/User.model');
 const tokenManager = require('../config/tokenManager');
 const passport = require('passport');
 
+/**
+ * @api {POST} /routes/login User Login
+ * @apiName login
+ * @apiGroup User
+ * @apiPermission None
+ *
+ * @apiDescription Login API
+ *
+ * @apiExample Example usage:
+ * curl -i http://localhost/routes/login
+ *
+ *
+ * @apiParamExample {json} Post-Example:
+ * {
+ *  "userName" : "test",
+ *  "password": "test123"
+ * }
+ *
+ * @apiSampleRequest /routes/login
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
+ * {
+ *   "success": "true",
+ *   "token": "eYxxxxxxxxxxIHYU"
+ * }
+ *
+ */
 exports.login = (req, res, next) => {
-    var username = req.body.username;
-    var password = req.body.password;
-    console.log(req.body);
-    // userModel.findOne({userName: username, password: password}, function(err, user) {
-    //     if (err) {
-    //         res.send({message: err});
-    //     } else if (user) {
-    //         var token = tokenManager.createToken(user, req);
-    //         res.send({token: token});
-    //     } else {
-    //         res.status(400).send({message: 'Invalid User credentials.'});
-    //     }
-    // });
     passport.authenticate('local', {failureFlash:true, assignProperty: 'user'},function (err, user, info) {
         console.log('authenticated');
         if (err) {
