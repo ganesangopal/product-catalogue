@@ -32,6 +32,10 @@ export class AuthService {
     return this.http.post('/routes/login', userData);
   }
 
+  onLoginGoogle() {
+    return this.http.get('/auth/google');
+  }
+
   getCurrentUser() {
     const token = localStorage.getItem('token');
     const userData = this.jwtHelper.decodeToken(token);

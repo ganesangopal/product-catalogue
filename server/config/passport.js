@@ -33,6 +33,7 @@
     //     require(path.resolve(strategy))();
     //   });
       require('./strategies/passport-local-strategy')();
+      require('./strategies/google')();
     };
   }());
   

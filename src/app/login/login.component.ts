@@ -38,4 +38,16 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  onLoginGoogle() {
+    this.authService.onLoginGoogle().subscribe(
+      (data: any) => {
+        //localStorage.setItem('token', data.token);
+        this.router.navigate(['/products']);
+      },
+      (error) => {
+        this.errorMessage = error.error.reason;
+      }
+    );
+  }
+
 }
