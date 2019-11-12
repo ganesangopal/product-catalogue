@@ -3,10 +3,6 @@ node {
     stage('Checkout') {
       checkout scm
     }
-    stage("Fix the permission issue") {
-        sh "apt-get install sudo"
-        sh "sudo chown root:jenkins /run/docker.sock"
-    }
     stage('Environment') {
       sh 'git --version'
       echo "Branch: ${env.BRANCH_NAME}"
