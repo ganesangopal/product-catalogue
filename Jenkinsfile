@@ -4,6 +4,8 @@ node {
       checkout scm
     }
     stage("Fix the permission issue") {
+        sh "apt-get update"
+        sh "apt-get install sudo"
         sh "sudo chown root:jenkins /run/docker.sock"
     }
     stage('Environment') {
