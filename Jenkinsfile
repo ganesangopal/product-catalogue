@@ -12,10 +12,8 @@ node {
     stage('Deploy'){
       if(env.BRANCH_NAME == 'master'){
           sshagent (credentials: ['87984278-ad96-426d-b9df-500bb56eb656']) {
-            sh 'docker build -t product-catalogue --no-cache .'
-            sh 'docker tag product-catalogue localhost:5000/product-catalogue'
-            sh 'docker push localhost:5000/product-catalogue'
-            sh 'docker rmi -f product-catalogue localhost:5000/product-catalogue'
+            sh 'docker image build -t product-catalogue:1.0'
+            sh 'docker container run --publish 8000:4600 --detach --name bb product-catalogue:1.0'
           }
       }
     }
