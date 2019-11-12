@@ -1,6 +1,5 @@
 # Extending image
 FROM node:carbon
-USER ganesan.gopal
 
 RUN apt-get update
 RUN apt-get upgrade -y
