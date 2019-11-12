@@ -6,6 +6,15 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get -y install autoconf automake libtool nasm make pkg-config git apt-utils
 
+# Add sudo information
+RUN apt-get install sudo
+
+RUN adduser --disabled-password --gecos '' docker
+RUN adduser docker sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER docker
+
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
