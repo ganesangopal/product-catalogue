@@ -13,8 +13,8 @@ node {
       if(env.BRANCH_NAME == 'master'){
           sshagent (credentials: ['87984278-ad96-426d-b9df-500bb56eb656']) {
             sh 'echo "jenkins ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers'
-            sh 'sudo docker image build -t product-catalogue:1.0 .'
-            sh 'sudo docker container run --publish 8000:4600 --detach --name bb product-catalogue:1.0'
+            sh 'docker image build -t product-catalogue:1.0 .'
+            sh 'docker container run --publish 8000:4600 --detach --name bb product-catalogue:1.0'
           }
       }
     }
