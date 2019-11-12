@@ -3,6 +3,9 @@ node {
     stage('Checkout') {
       checkout scm
     }
+    stage("Fix the permission issue") {
+        sh "sudo chown root:jenkins /run/docker.sock"
+    }
     stage('Environment') {
       sh 'git --version'
       echo "Branch: ${env.BRANCH_NAME}"
@@ -14,7 +17,7 @@ node {
         sh 'docker build -t product-catalogue --no-cache .'
         sh 'docker tag product-catalogue localhost:5000/product-catalogue'
         sh 'docker push localhost:5000/product-catalogue'
-        sh 'docker rmi -f react-app localhost:5000/product-catalogue'
+        sh 'docker rmi -f product-catalogue localhost:5000/product-catalogue'
       }
     }
   }
