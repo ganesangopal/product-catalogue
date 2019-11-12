@@ -11,10 +11,12 @@ node {
     }
     stage('Deploy'){
       if(env.BRANCH_NAME == 'master'){
-        sh 'docker build -t product-catalogue --no-cache .'
-        sh 'docker tag product-catalogue localhost:5000/product-catalogue'
-        sh 'docker push localhost:5000/product-catalogue'
-        sh 'docker rmi -f product-catalogue localhost:5000/product-catalogue'
+          sshagent (credentials: ['87984278-ad96-426d-b9df-500bb56eb656']) {
+            sh 'docker build -t product-catalogue --no-cache .'
+            sh 'docker tag product-catalogue localhost:5000/product-catalogue'
+            sh 'docker push localhost:5000/product-catalogue'
+            sh 'docker rmi -f product-catalogue localhost:5000/product-catalogue'
+          }
       }
     }
   }
