@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build && nodemon server.js",
     "build-dev": "ng build --dev",
+    "build-prod": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
