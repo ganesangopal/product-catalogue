@@ -10,12 +10,10 @@ node {
       sh 'printenv'
     }
     stage('Deploy'){
-      if(env.BRANCH_NAME == 'master'){
-          sshagent (credentials: ['87984278-ad96-426d-b9df-500bb56eb656']) {
-            sh 'echo $USER'
-            sh 'docker image build -t product-catalogue:1.0 .'
-            sh 'docker container run --publish 8000:4600 --detach --name bb product-catalogue:1.0'
-          }
+      if (env.BRANCH_NAME == 'master') {
+        sh 'echo $USER'
+        sh 'docker image build -t product-catalogue:1.0 .'
+        sh 'docker container run --publish 8000:4600 --detach --name bb product-catalogue:1.0'
       }
     }
   }
