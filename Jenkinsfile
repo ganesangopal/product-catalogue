@@ -13,7 +13,7 @@ node {
       if (env.BRANCH_NAME == 'master') {
         sh 'echo $USER'
         sh 'docker image build -t product-catalogue:1.0 .'
-        sh 'docker container run --publish 8000:4600 --detach --name bb product-catalogue:1.0'
+        sh 'docker container run --publish 4600:8080 --detach --name bb product-catalogue:1.0'
       }
     }
   }
