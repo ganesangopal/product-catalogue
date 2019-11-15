@@ -12,7 +12,12 @@ node {
       sh 'printenv'
     }
     stage('Build') {
-      sh 'npm -v'
+      env.NODEJS_HOME = "${tool 'Node 10.x'}"
+      // on linux / mac
+      env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+      // on windows
+      env.PATH="${env.NODEJS_HOME};${env.PATH}"
+      sh 'npm --version'
       // sh 'apt install node'
       // sh 'node -v'
       // sh 'npm prune'
