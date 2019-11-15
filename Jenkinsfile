@@ -1,23 +1,36 @@
 node {
   try {
+    //bitbucketStatusNotify(buildState: 'INPROGRESS')
     stage('Checkout') {
       checkout scm
     }
     stage('Environment') {
       sh 'git --version'
       echo "Branch: ${env.BRANCH_NAME}"
+      echo "Build: ${env.BUILD_NUMBER}"
       sh 'docker -v'
       sh 'printenv'
     }
-    stage('Deploy'){
-      if (env.BRANCH_NAME == 'trunk') {
-        sh 'echo $USER'
-        sh 'docker image build -t product-catalogue:1.0 .'
-        sh 'docker container run --publish 4001:4600 --detach --name procat-v2 product-catalogue:1.0'
-      }
+    stage('Build') {
+      sh 'apt-get install node'
+      sh 'npm -v'
+      // sh 'apt install node'
+      // sh 'node -v'
+      // sh 'npm prune'
+      // sh 'npm install'
+      // sh 'npm run-script build-prod'
     }
+    // stage('Deploy'){
+    //   sh 'echo $USER'
+    //   sh "docker image build -t ${env.IMAGE_TAG} ."
+    //   sh "docker container stop ${env.CONTAINER_NAME}"
+    //   sh "docker container rm ${env.CONTAINER_NAME}"
+    //   sh "docker container run --publish ${env.HOST_PORT}:${env.CONTAINER_PORT} --detach --name ${env.CONTAINER_NAME} ${env.IMAGE_TAG}"
+    //   //bitbucketStatusNotify(buildState: 'SUCCESSFUL')
+    // }
   }
   catch (err) {
+    //bitbucketStatusNotify(buildState: 'FAILED')
     throw err
   }
 }
