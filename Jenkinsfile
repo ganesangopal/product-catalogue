@@ -18,6 +18,7 @@ node {
       // on windows
       env.PATH="${env.NODEJS_HOME};${env.PATH}"
       sh 'npm --version'
+      sh 'node -v'
       // sh 'apt install node'
       // sh 'node -v'
       // sh 'npm prune'
