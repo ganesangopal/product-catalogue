@@ -12,7 +12,7 @@ node {
       sh 'printenv'
     }
     stage('Build') {
-      env.NODEJS_HOME = "${tool 'Node 10.x'}"
+      env.NODEJS_HOME = "${tool 'node'}"
       // on linux / mac
       env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
       // on windows
