@@ -12,7 +12,7 @@ node {
       sh 'printenv'
     }
     stage('Build') {
-      sh 'apt-get install node'
+      sh 'apt install node'
       sh 'npm -v'
       // sh 'apt install node'
       // sh 'node -v'
