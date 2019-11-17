@@ -1,0 +1,33 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:10' 
+            args '-p 3001:3001' 
+        }
+    }
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'npm -v'
+                sh 'node -v'
+            }
+        }
+    }
+}
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'git --version'
+                sh 'docker -v'
+                sh "env.NODEJS_HOME = ${tool 'node13'}"
+                sh "env.PATH=${env.NODEJS_HOME}:${env.PATH}"
+                sh "echo ${env.PATH}"
+                sh 'node -version'
+            }
+        }
+    }
+}
