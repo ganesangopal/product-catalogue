@@ -9,6 +9,11 @@ node {
       sh 'docker -v'
       sh 'printenv'
     }
+    stage('Build') {
+      nodejs(nodeJSInstallationName: 'node', configId: '') {
+        sh 'npm -v'
+      }
+    }
     stage('Deploy'){
       if (env.BRANCH_NAME == 'master') {
         sh 'echo $USER'
