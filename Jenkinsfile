@@ -1,4 +1,4 @@
-node {
+node('master') {
   try {
     stage('Checkout') {
       checkout scm
@@ -13,7 +13,7 @@ node {
       env.NODEJS_HOME = "${tool 'node'}"
       // on linux / mac
       env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-      sh 'npm --version'
+      sh 'npm -v'
     }
     stage('Deploy'){
       if (env.BRANCH_NAME == 'master') {
