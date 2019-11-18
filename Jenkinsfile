@@ -10,9 +10,10 @@ node {
       sh 'printenv'
     }
     stage('Build') {
-      nodejs(nodeJSInstallationName: 'node', configId: '') {
-        sh 'npm -v'
-      }
+      env.NODEJS_HOME = "${tool 'node'}"
+      // on linux / mac
+      env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+      sh 'npm --version'
     }
     stage('Deploy'){
       if (env.BRANCH_NAME == 'master') {
