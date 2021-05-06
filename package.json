@@ -36,7 +36,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "fstream": "^1.0.12",
-    "handlebars": "^4.5.1",
+    "handlebars": "^4.7.7",
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.15",
